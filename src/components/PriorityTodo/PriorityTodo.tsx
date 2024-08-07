@@ -1,28 +1,72 @@
-import { Box, MenuItem, Select, SelectChangeEvent } from "@mui/material"
+import { Box, Chip, MenuItem, Select, SelectChangeEvent } from "@mui/material"
 import { useState } from "react"
 
-const PriorityTodo = () => {
-  const [statusFilter, setStatusFilter] = useState('All')
-  const handleChangeStatus = (event: SelectChangeEvent<string>) => {
-    setStatusFilter(event.target.value)
+interface Priority {
+  id: number,
+  priorityLevel: string,
+  priorityColor: string,
+  priorityBgClr: string
+}
+
+const prioritiesList: Priority[] = [
+  {
+    id: 1,
+    priorityLevel: "Cao",
+    priorityColor: "red",
+    priorityBgClr: "#fcdede"
+  },
+  {
+    id: 2,
+    priorityLevel: "Trung bình",
+    priorityColor: "yellow",
+    priorityBgClr: "#949494"
+  },
+  {
+    id: 3,
+    priorityLevel: "Thấp",
+    priorityColor: "blue",
+    priorityBgClr: "#d9d9ff"
+  }
+]
+
+const FilterTodo = () => {
+  const [priorities, setPriorities] = useState<Priority[]>([])
+  const handleChange = (event: SelectChangeEvent<string[]>) => {
+    const newOne = event.target.value as string[]
+    const newListPrio: Priority[] = newOne.map(prio => prioritiesList.find(prio2 => prio2.priorityLevel === prio)).filter((prio): prio is Priority => prio !== undefined)
+    setPriorities(newListPrio)
   }
   return (
     <Box>
-      <span>Trạng thái:</span>
+      <span>Độ ưu tiên: </span>
       <Select
-        id="filter-status"
-        value={statusFilter}
+        id="filter priority"
+        multiple
         displayEmpty
+        fullWidth
         size="small"
-        sx={{ ml: '6px', minWidth: 170 }}
-        onChange={handleChangeStatus}
+        value={priorities.map(priority => priority.priorityLevel)}
+        onChange={handleChange}
+        renderValue={() => (
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            {priorities.map((prio) => (
+              <Chip key={prio.id} label={prio.priorityLevel} sx={{ borderRadius: '4px', color: prio.priorityColor, border: `0.5px solid ${prio.priorityColor}`, bgcolor: prio.priorityBgClr }} />
+            ))}
+          </Box>
+        )}
       >
-        <MenuItem value={"All"}>Tất cả</MenuItem>
-        <MenuItem value={"Completed"}>Đã hoàn thành</MenuItem>
-        <MenuItem value={"Todo"}>Chưa hoàn thành</MenuItem>
+        {prioritiesList.map((priority) => (
+          <MenuItem
+            key={priority.id}
+            value={priority.priorityLevel}
+          >
+            {priority.priorityLevel}
+          </MenuItem>
+        ))}
       </Select>
     </Box>
   )
 }
 
-export default PriorityTodo
+export default FilterTodo
+
