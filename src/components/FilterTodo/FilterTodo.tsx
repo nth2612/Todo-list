@@ -2,6 +2,8 @@ import { Box, MenuItem, Select, SelectChangeEvent } from "@mui/material"
 import { useState } from "react"
 
 const PriorityTodo = () => {
+  console.log("Filter rerender");
+  
   const [statusFilter, setStatusFilter] = useState('All')
   const handleChangeStatus = (event: SelectChangeEvent<string>) => {
     setStatusFilter(event.target.value)

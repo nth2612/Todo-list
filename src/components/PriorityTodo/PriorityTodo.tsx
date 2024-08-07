@@ -1,7 +1,7 @@
 import { Box, Chip, MenuItem, Select, SelectChangeEvent } from "@mui/material"
 import { useState } from "react"
 
-interface Priority {
+export interface Priority {
   id: number,
   priorityLevel: string,
   priorityColor: string,
@@ -30,6 +30,8 @@ const prioritiesList: Priority[] = [
 ]
 
 const FilterTodo = () => {
+  console.log("Prio rerender");
+  
   const [priorities, setPriorities] = useState<Priority[]>([])
   const handleChange = (event: SelectChangeEvent<string[]>) => {
     const newOne = event.target.value as string[]
