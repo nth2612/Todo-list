@@ -100,7 +100,7 @@ const ListTodo = () => {
             <li key={todo.id} onClick={() => {
               handleOpenAndEdit(todo)
               handleOpen()
-            }} className='flex flex-row items-center border border-teal-200 cursor-pointer'>
+            }} className='flex flex-row items-center cursor-pointer hover:bg-[#ddd]'>
               <IconButton size='small'>
                 {todo.isCompleted ? <CheckBoxOutlinedIcon/> : <CheckBoxOutlineBlankOutlinedIcon/>}
               </IconButton>
