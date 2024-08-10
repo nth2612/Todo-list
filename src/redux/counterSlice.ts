@@ -1,30 +1,67 @@
 import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 
-export interface CounterState {
-  value: number
+export interface Todo {
+  id: string,
+  name: string,
+  prio: string,
+  isCompleted: boolean
 }
 
-const initValue: CounterState = {
-  value: 10
+const initValue = {
+  filter: {
+    search: '',
+    status: 'All',
+    priority: []
+  },
+  todoList: [
+    {
+      id: 'abncn',
+      name: "Quét nhà",
+      prio: "Thấp",
+      isCompleted: false
+    },
+    {
+      id: 'abncn2',
+      name: "Lau nhà",
+      prio: "Trung bình",
+      isCompleted: false
+    },
+    {
+      id: 'abncn3',
+      name: "Rửa bát",
+      prio: "Cao",
+      isCompleted: false
+    },
+    {
+      id: 'abncn4',
+      name: "Uống nước",
+      prio: "Trung bình",
+      isCompleted: true
+    }
+  ]
 }
 
 export const counterSlice = createSlice({
-  name: 'counter',
+  name: 'todo-list',
   initialState: initValue,
   reducers: {
-    increment: (state) => {
-      state.value += 2
+    increment: (state, action: PayloadAction<Todo>) => {
+      state.todoList.push(action.payload)
     },
-    decrement: (state) => {
-      state.value -= 3
+    decrement: (state, action: PayloadAction<string>) => {
+      const indexDelete = state.todoList.findIndex(employ => employ.id === action.payload)
+      state.todoList.splice(indexDelete, 1)
     },
-    incrementWithPayload: (state, action: PayloadAction<number>) => {
-      state.value += action.payload
+    changeSearchText: (state, action: PayloadAction<string>) => {
+      state.filter.search = action.payload
+    },
+    changeStatusFilter: (state, action: PayloadAction<string>) => {
+      state.filter.status = action.payload
     }
   }
 })
 
-export const { increment, decrement, incrementWithPayload } = counterSlice.actions
+export const { increment, decrement, changeSearchText, changeStatusFilter } = counterSlice.actions
 
 export default counterSlice.reducer

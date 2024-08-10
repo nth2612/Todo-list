@@ -1,12 +1,15 @@
 import { Box, MenuItem, Select, SelectChangeEvent } from "@mui/material"
 import { useState } from "react"
+import { useDispatch } from "react-redux"
+import { changeStatusFilter } from "../../redux/counterSlice"
 
 const PriorityTodo = () => {
-  console.log("Filter rerender");
-  
+  console.log("Filter rerender")
+  const dispatch = useDispatch()
   const [statusFilter, setStatusFilter] = useState('All')
   const handleChangeStatus = (event: SelectChangeEvent<string>) => {
     setStatusFilter(event.target.value)
+    dispatch(changeStatusFilter(event.target.value))
   }
   return (
     <Box>

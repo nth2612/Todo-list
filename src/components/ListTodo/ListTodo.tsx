@@ -4,45 +4,9 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Box, Chip, IconButton, Modal } from '@mui/material'
 import { useState } from 'react'
-
-interface RawData {
-  id: string,
-  nameTodo: string,
-  prio: string,
-  isCompleted: boolean
-}
-const testData: RawData[] = [
-  {
-    id: "1",
-    nameTodo: "hihihi1",
-    prio: "Cao",
-    isCompleted: false
-  },
-  {
-    id: "2",
-    nameTodo: "hihihi3",
-    prio: "Thấp",
-    isCompleted: false
-  },
-  {
-    id: "3",
-    nameTodo: "hihihi5",
-    prio: "Cao",
-    isCompleted: true
-  },
-  {
-    id: "4",
-    nameTodo: "hihihi2",
-    prio: "Trung bình",
-    isCompleted: false
-  },
-  {
-    id: "5",
-    nameTodo: "hihihi4",
-    prio: "Cao",
-    isCompleted: false
-  }
-]
+import { Todo } from '../../redux/counterSlice'
+import { useSelector } from 'react-redux'
+import type { RootState } from '../../redux/store'
 
 const prioritiesList = [
   {
@@ -78,6 +42,9 @@ const style = {
 }
 
 const ListTodo = () => {
+  const bigStore = useSelector((state: RootState) => state.listTodo)
+  const listTodos: Todo[] = bigStore.todoList
+  const { priority, search, status } = bigStore.filter
   console.log('tao render')
   const [open, setOpen] = useState<boolean>(false)
   const [editText, setEditText] = useState<string>('')
@@ -88,13 +55,26 @@ const ListTodo = () => {
     setEditText(event.target.value)
   }
   const handleClose = () => setOpen(false)
-  const handleOpenAndEdit = (todo: RawData) => {
-    setEditText(todo.nameTodo)
+  const handleOpenAndEdit = (todo: Todo) => {
+    setEditText(todo.name)
+  }
+  const getTodoByName = (arr: Todo[], searchString: string) => {
+    return arr.filter(todo => todo.name.includes(searchString))
+  }
+  const getTodoByStatus = (arr: Todo[], status: string) => {
+    switch (status) {
+    case 'Completed':
+      return arr.filter(todo => todo.isCompleted === true)
+    case 'Todo':
+      return arr.filter(todo => todo.isCompleted === false)
+    default:
+      return arr
+    }
   }
   return (
     <div className="flex-1 overflow-x-hidden overflow-y-auto">
       <ul className='flex flex-col-reverse gap-2'>
-        {testData.map(todo => {
+        {getTodoByStatus(getTodoByName(listTodos, search), status).map(todo => {
           const getColor = prioritiesList.find(prio => prio.priorityLevel === todo.prio)!
           return (
             <li key={todo.id} onClick={() => {
@@ -104,7 +84,7 @@ const ListTodo = () => {
               <IconButton size='small'>
                 {todo.isCompleted ? <CheckBoxOutlinedIcon/> : <CheckBoxOutlineBlankOutlinedIcon/>}
               </IconButton>
-              <span className='flex-1 text-left'>{todo.nameTodo}</span>
+              <span className='flex-1 text-left'>{todo.name}</span>
               <Chip label={todo.prio} sx={{ borderRadius: '4px', color: getColor.priorityColor, border: `0.5px solid ${getColor.priorityColor}`, bgcolor: getColor.priorityBgClr }} />
             </li>
           )
