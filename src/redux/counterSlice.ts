@@ -8,11 +8,18 @@ export interface Todo {
   isCompleted: boolean
 }
 
-const initValue = {
+const initValue : {
+  filter: {
+    search: string,
+    status: string,
+    priority: string[]
+  },
+  todoList: Todo[]
+} = {
   filter: {
     search: '',
     status: 'All',
-    priority: []
+    priority: ["Cao", "Trung bình", "Thấp"]
   },
   todoList: [
     {
@@ -58,10 +65,17 @@ export const counterSlice = createSlice({
     },
     changeStatusFilter: (state, action: PayloadAction<string>) => {
       state.filter.status = action.payload
+    },
+    changePrioFilter: (state, action: PayloadAction<string[]>) => {
+      console.log(action.payload)
+      if (action.payload.length === 0) {
+        state.filter.priority = []
+      }
+      state.filter.priority = action.payload
     }
   }
 })
 
-export const { increment, decrement, changeSearchText, changeStatusFilter } = counterSlice.actions
+export const { increment, decrement, changeSearchText, changeStatusFilter, changePrioFilter } = counterSlice.actions
 
 export default counterSlice.reducer

@@ -58,23 +58,21 @@ const ListTodo = () => {
   const handleOpenAndEdit = (todo: Todo) => {
     setEditText(todo.name)
   }
-  const getTodoByName = (arr: Todo[], searchString: string) => {
-    return arr.filter(todo => todo.name.includes(searchString))
-  }
-  const getTodoByStatus = (arr: Todo[], status: string) => {
+  const getTodoByNameAndStatusAndFilter = (arr: Todo[], searchString: string, status: string, prio?: string[]) => {
+    const lowerSearchString = searchString.toLowerCase()
     switch (status) {
     case 'Completed':
-      return arr.filter(todo => todo.isCompleted === true)
+      return arr.filter(todo => todo.isCompleted === true && todo.name.toLowerCase().includes(lowerSearchString))
     case 'Todo':
-      return arr.filter(todo => todo.isCompleted === false)
+      return arr.filter(todo => todo.isCompleted === false && todo.name.toLowerCase().includes(lowerSearchString))
     default:
-      return arr
+      return arr.filter(todo => todo.name.toLowerCase().includes(lowerSearchString))
     }
   }
   return (
     <div className="flex-1 overflow-x-hidden overflow-y-auto">
       <ul className='flex flex-col-reverse gap-2'>
-        {getTodoByStatus(getTodoByName(listTodos, search), status).map(todo => {
+        {getTodoByNameAndStatusAndFilter(listTodos, search, status).map(todo => {
           const getColor = prioritiesList.find(prio => prio.priorityLevel === todo.prio)!
           return (
             <li key={todo.id} onClick={() => {

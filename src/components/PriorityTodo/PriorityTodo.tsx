@@ -1,5 +1,7 @@
 import { Box, Chip, MenuItem, Select, SelectChangeEvent } from "@mui/material"
-import { useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { changePrioFilter } from "../../redux/counterSlice"
+import type { RootState } from "../../redux/store"
 
 export interface Priority {
   id: number,
@@ -30,32 +32,34 @@ const prioritiesList: Priority[] = [
 ]
 
 const FilterTodo = () => {
-  console.log("Prio rerender");
-  
-  const [priorities, setPriorities] = useState<Priority[]>([])
+  console.log("Prio rerender")
+  const priolist: string[] = useSelector((state: RootState) => state.listTodo.filter.priority)
+  const dispatch = useDispatch()
   const handleChange = (event: SelectChangeEvent<string[]>) => {
     const newOne = event.target.value as string[]
-    const newListPrio: Priority[] = newOne.map(prio => prioritiesList.find(prio2 => prio2.priorityLevel === prio)).filter((prio): prio is Priority => prio !== undefined)
-    setPriorities(newListPrio)
+    dispatch(changePrioFilter(newOne))
   }
   return (
     <Box>
       <span>Độ ưu tiên: </span>
       <Select
-        id="filter priority"
+        id="filter-priority"
         multiple
         displayEmpty
         fullWidth
         size="small"
-        value={priorities.map(priority => priority.priorityLevel)}
+        value={priolist}
         onChange={handleChange}
-        renderValue={() => (
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-            {priorities.map((prio) => (
-              <Chip key={prio.id} label={prio.priorityLevel} sx={{ borderRadius: '4px', color: prio.priorityColor, border: `0.5px solid ${prio.priorityColor}`, bgcolor: prio.priorityBgClr }} />
-            ))}
-          </Box>
-        )}
+        renderValue={(selected) => {
+          return (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+              {selected.map(prio => {
+                const wholePrio = prioritiesList.find(pri => pri.priorityLevel === prio)!
+                return <Chip key={wholePrio.id} label={wholePrio.priorityLevel} sx={{ borderRadius: '4px', color: wholePrio.priorityColor, border: `0.5px solid ${wholePrio.priorityColor}`, bgcolor: wholePrio.priorityBgClr }} />
+              })}
+            </Box>
+          )
+        }}
       >
         {prioritiesList.map((priority) => (
           <MenuItem
@@ -69,6 +73,5 @@ const FilterTodo = () => {
     </Box>
   )
 }
-
 export default FilterTodo
 
