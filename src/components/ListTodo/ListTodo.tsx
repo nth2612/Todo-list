@@ -58,35 +58,37 @@ const ListTodo = () => {
   const handleOpenAndEdit = (todo: Todo) => {
     setEditText(todo.name)
   }
-  const getTodoByNameAndStatusAndFilter = (arr: Todo[], searchString: string, status: string, prio?: string[]) => {
-    const lowerSearchString = searchString.toLowerCase()
+  const getTodoByNameAndStatusAndFilter = (arr: Todo[]) => {
+    const lowerSearchString = search.toLowerCase()
     switch (status) {
     case 'Completed':
-      return arr.filter(todo => todo.isCompleted === true && todo.name.toLowerCase().includes(lowerSearchString))
+      return arr.filter(todo => todo.isCompleted === true && todo.name.toLowerCase().includes(lowerSearchString) && priority.includes(todo.prio))
     case 'Todo':
-      return arr.filter(todo => todo.isCompleted === false && todo.name.toLowerCase().includes(lowerSearchString))
+      return arr.filter(todo => todo.isCompleted === false && todo.name.toLowerCase().includes(lowerSearchString) && priority.includes(todo.prio))
     default:
-      return arr.filter(todo => todo.name.toLowerCase().includes(lowerSearchString))
+      return arr.filter(todo => todo.name.toLowerCase().includes(lowerSearchString) && priority.includes(todo.prio))
     }
   }
   return (
     <div className="flex-1 overflow-x-hidden overflow-y-auto">
       <ul className='flex flex-col-reverse gap-2'>
-        {getTodoByNameAndStatusAndFilter(listTodos, search, status).map(todo => {
-          const getColor = prioritiesList.find(prio => prio.priorityLevel === todo.prio)!
-          return (
-            <li key={todo.id} onClick={() => {
-              handleOpenAndEdit(todo)
-              handleOpen()
-            }} className='flex flex-row items-center cursor-pointer hover:bg-[#ddd]'>
-              <IconButton size='small'>
-                {todo.isCompleted ? <CheckBoxOutlinedIcon/> : <CheckBoxOutlineBlankOutlinedIcon/>}
-              </IconButton>
-              <span className='flex-1 text-left'>{todo.name}</span>
-              <Chip label={todo.prio} sx={{ borderRadius: '4px', color: getColor.priorityColor, border: `0.5px solid ${getColor.priorityColor}`, bgcolor: getColor.priorityBgClr }} />
-            </li>
-          )
-        })}
+        {getTodoByNameAndStatusAndFilter(listTodos).length !== 0 ?
+          getTodoByNameAndStatusAndFilter(listTodos).map(todo => {
+            const getColor = prioritiesList.find(prio => prio.priorityLevel === todo.prio)!
+            return (
+              <li key={todo.id} onClick={() => {
+                handleOpenAndEdit(todo)
+                handleOpen()
+              }} className='flex flex-row items-center cursor-pointer hover:bg-[#ddd]'>
+                <IconButton size='small'>
+                  {todo.isCompleted ? <CheckBoxOutlinedIcon/> : <CheckBoxOutlineBlankOutlinedIcon/>}
+                </IconButton>
+                <span className='flex-1 text-left'>{todo.name}</span>
+                <Chip label={todo.prio} sx={{ borderRadius: '4px', color: getColor.priorityColor, border: `0.5px solid ${getColor.priorityColor}`, bgcolor: getColor.priorityBgClr }} />
+              </li>
+            )
+          })
+          : <h1 className='text-center'>Không tìm thấy</h1>}
       </ul>
       <Modal
         disableEnforceFocus

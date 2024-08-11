@@ -24,6 +24,7 @@ const AddTodo = () => {
       isCompleted: false
     }
     dispatch(increment(newTodo))
+    setNameTodo('')
   }
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75 }}>
