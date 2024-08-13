@@ -57,7 +57,7 @@ export const counterSlice = createSlice({
       state.todoList.push(action.payload)
     },
     decrement: (state, action: PayloadAction<string>) => {
-      const indexDelete = state.todoList.findIndex(employ => employ.id === action.payload)
+      const indexDelete = state.todoList.findIndex(todo => todo.id === action.payload)
       state.todoList.splice(indexDelete, 1)
     },
     changeSearchText: (state, action: PayloadAction<string>) => {
@@ -67,15 +67,26 @@ export const counterSlice = createSlice({
       state.filter.status = action.payload
     },
     changePrioFilter: (state, action: PayloadAction<string[]>) => {
-      console.log(action.payload)
       if (action.payload.length === 0) {
         state.filter.priority = []
       }
       state.filter.priority = action.payload
+    },
+    changeStatusTodo: (state, action: PayloadAction<string>) => {
+      const todo = state.todoList.find(td => td.id === action.payload)
+      if (todo) {
+        todo.isCompleted = !todo.isCompleted
+      }
+    },
+    changeNameTodo: (state, action:PayloadAction<{ id: string, name: string }>) => {
+      const todo = state.todoList.find(td => td.id === action.payload.id)
+      if (todo) {
+        todo.name = action.payload.name
+      }
     }
   }
 })
 
-export const { increment, decrement, changeSearchText, changeStatusFilter, changePrioFilter } = counterSlice.actions
+export const { increment, decrement, changeSearchText, changeStatusFilter, changePrioFilter, changeStatusTodo, changeNameTodo } = counterSlice.actions
 
 export default counterSlice.reducer

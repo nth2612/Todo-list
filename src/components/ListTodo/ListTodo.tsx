@@ -2,11 +2,14 @@ import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlin
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined'
 import ModeEditIcon from '@mui/icons-material/ModeEdit'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { Box, Chip, IconButton, Modal } from '@mui/material'
+import { Box, Button, Chip, IconButton, Modal } from '@mui/material'
 import { useState } from 'react'
-import { Todo } from '../../redux/counterSlice'
-import { useSelector } from 'react-redux'
+import { changeNameTodo, decrement, Todo } from '../../redux/counterSlice'
+import { useDispatch, useSelector } from 'react-redux'
 import type { RootState } from '../../redux/store'
+import DoneIcon from '@mui/icons-material/Done'
+import { changeStatusTodo } from '../../redux/counterSlice'
+import RemoveDoneIcon from '@mui/icons-material/RemoveDone'
 
 const prioritiesList = [
   {
@@ -43,11 +46,13 @@ const style = {
 
 const ListTodo = () => {
   const bigStore = useSelector((state: RootState) => state.listTodo)
+  const dispatch = useDispatch()
   const listTodos: Todo[] = bigStore.todoList
   const { priority, search, status } = bigStore.filter
   console.log('tao render')
   const [open, setOpen] = useState<boolean>(false)
   const [editText, setEditText] = useState<string>('')
+  const [todoIsEditing, setTodoIsEditing] = useState<Todo>({} as Todo)
   const handleOpen = () => {
     setOpen(true)
   }
@@ -56,7 +61,20 @@ const ListTodo = () => {
   }
   const handleClose = () => setOpen(false)
   const handleOpenAndEdit = (todo: Todo) => {
+    setTodoIsEditing(todo)
     setEditText(todo.name)
+  }
+  const handleStatus = () => {
+    dispatch(changeStatusTodo(todoIsEditing.id))
+    handleClose()
+  }
+  const handleNameTodo = () => {
+    dispatch(changeNameTodo({ id: todoIsEditing.id, name: editText }))
+    handleClose()
+  }
+  const handleDelete = () => {
+    dispatch(decrement(todoIsEditing.id))
+    handleClose()
   }
   const getTodoByNameAndStatusAndFilter = (arr: Todo[]) => {
     const lowerSearchString = search.toLowerCase()
@@ -100,14 +118,22 @@ const ListTodo = () => {
       >
         <Box sx={style}>
           <h2 className='text-center'>Công việc</h2>
-          <textarea name="" id="" onChange={handleChangeTextarea} rows={4} className='w-full border outline-none min-h-14' placeholder='' value={editText} />
-          <div className='flex justify-center gap-5'>
-            <IconButton size='medium'>
-              <ModeEditIcon/>
-            </IconButton>
-            <IconButton size='medium' onClick={handleClose}>
-              <DeleteIcon/>
-            </IconButton>
+          <textarea name="" id="" onChange={handleChangeTextarea} rows={4} className='w-full border outline-none min-h-14 p-2' placeholder='' value={editText} />
+          <div className='flex items-start flex-col'>
+            {todoIsEditing.isCompleted
+              ? <Button size='medium' onClick={handleStatus} startIcon={<RemoveDoneIcon/>}>
+                Bỏ đánh dấu hoàn thành
+              </Button>
+
+              : <Button size='medium' onClick={handleStatus} startIcon={<DoneIcon/>}>
+                Đánh dấu đã hoàn thành
+              </Button>}
+            <Button size='medium' startIcon={<ModeEditIcon/>} onClick={handleNameTodo}>
+              Chỉnh sửa tên công việc
+            </Button>
+            <Button size='medium' onClick={handleDelete} startIcon={<DeleteIcon/>}>
+              Xóa công việc
+            </Button>
           </div>
         </Box>
       </Modal>

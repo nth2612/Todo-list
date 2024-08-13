@@ -28,7 +28,7 @@ const AddTodo = () => {
   }
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75 }}>
-      <TextField sx={{ }} size="small" value={nameTodo} fullWidth onChange={handleChangeNameTodo} />
+      <TextField sx={{ }} size="small" value={nameTodo} placeholder="Nhập việc bạn muốn làm" fullWidth onChange={handleChangeNameTodo} />
       <Select
         id="add-with-prio"
         displayEmpty
