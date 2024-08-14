@@ -3,7 +3,7 @@ import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined'
 import ModeEditIcon from '@mui/icons-material/ModeEdit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Box, Button, Chip, IconButton, Modal } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { changeNameTodo, decrement, Todo } from '../../redux/counterSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import type { RootState } from '../../redux/store'
@@ -76,6 +76,9 @@ const ListTodo = () => {
     dispatch(decrement(todoIsEditing.id))
     handleClose()
   }
+  useEffect(() => {
+    localStorage.setItem("todo-redux", JSON.stringify(listTodos))
+  }, [listTodos])
   const getTodoByNameAndStatusAndFilter = (arr: Todo[]) => {
     const lowerSearchString = search.toLowerCase()
     switch (status) {
@@ -101,7 +104,7 @@ const ListTodo = () => {
                 <IconButton size='small'>
                   {todo.isCompleted ? <CheckBoxOutlinedIcon/> : <CheckBoxOutlineBlankOutlinedIcon/>}
                 </IconButton>
-                <span className='flex-1 text-left'>{todo.name}</span>
+                <span className={`flex-1 text-left break-words ${todo.isCompleted && 'line-through'}`}>{todo.name}</span>
                 <Chip label={todo.prio} sx={{ borderRadius: '4px', color: getColor.priorityColor, border: `0.5px solid ${getColor.priorityColor}`, bgcolor: getColor.priorityBgClr }} />
               </li>
             )

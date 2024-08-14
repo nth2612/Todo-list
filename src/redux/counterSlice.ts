@@ -8,6 +8,8 @@ export interface Todo {
   isCompleted: boolean
 }
 
+const dataFromLocal = JSON.parse(localStorage.getItem("todo-redux") ?? "[]")
+
 const initValue : {
   filter: {
     search: string,
@@ -21,32 +23,7 @@ const initValue : {
     status: 'All',
     priority: ["Cao", "Trung bình", "Thấp"]
   },
-  todoList: [
-    {
-      id: 'abncn',
-      name: "Quét nhà",
-      prio: "Thấp",
-      isCompleted: false
-    },
-    {
-      id: 'abncn2',
-      name: "Lau nhà",
-      prio: "Trung bình",
-      isCompleted: false
-    },
-    {
-      id: 'abncn3',
-      name: "Rửa bát",
-      prio: "Cao",
-      isCompleted: false
-    },
-    {
-      id: 'abncn4',
-      name: "Uống nước",
-      prio: "Trung bình",
-      isCompleted: true
-    }
-  ]
+  todoList: dataFromLocal
 }
 
 export const counterSlice = createSlice({
